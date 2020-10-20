@@ -2,13 +2,43 @@ import { Link, BlitzPage, useMutation } from "blitz"
 import Layout from "app/layouts/Layout"
 import logout from "app/auth/mutations/logout"
 import { useCurrentUser } from "app/hooks/useCurrentUser"
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
+import ReactMapGL from "react-map-gl"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
  * You can delete everything in here and start from scratch if you like.
  */
+const MapboxMap = () => {
+  const [viewport, setViewport] = useState({
+    latitude: 49.3448841,
+    longitude: -119.5802691,
+    width: 50 + "vw",
+    height: 50 + "vh",
+    zoom: 13,
+  })
 
+  return (
+    <div className="bg-black  object-center">
+      <ReactMapGL
+        {...viewport}
+        mapboxApiAccessToken={
+          "pk.eyJ1Ijoib2xpdmllcm10bCIsImEiOiJja2c2a3NlcjYxNWE5MnFvNXd3YWExaG13In0.n55Tr-IjbzoUZn0eNIk1iw"
+        }
+        onViewportChange={(viewport) => {
+          setViewport(viewport)
+        }}
+      >
+        <div className="box-border h-20 w-64 p-4 border-4 border-gray-400 bg-gray-200 ">
+          <div className="h-full w-full bg-gray-400">
+            {" "}
+            <h1 className="text-purple-500">Hello</h1>
+          </div>
+        </div>
+      </ReactMapGL>
+    </div>
+  )
+}
 const UserInfo = () => {
   const currentUser = useCurrentUser()
   const [logoutMutation] = useMutation(logout)
@@ -64,6 +94,9 @@ const Home: BlitzPage = () => {
             <UserInfo />
           </Suspense>
         </div>
+        <Suspense fallback="Loading Map...">
+          <MapboxMap />
+        </Suspense>
         <p>
           <strong>
             To add a new model to your app, <br />
