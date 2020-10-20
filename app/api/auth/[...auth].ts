@@ -12,7 +12,11 @@ export default passportAuth({
       {
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "https://bareblitz.herokuapp.com/api/auth/google",
+        callbackURL:
+          process.env.NODE_ENV === "production"
+            ? "https://bareblitz.herokuapp.com/api/auth/google/callback"
+            : "http://127.0.0.1:3000/api/auth/google/callback",
+
         includeEmail: true,
       },
       async function (_token, _tokenSecret, profile, done) {
