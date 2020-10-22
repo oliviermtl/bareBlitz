@@ -2,43 +2,89 @@ import { Link, BlitzPage, useMutation } from "blitz"
 import Layout from "app/layouts/Layout"
 import logout from "app/auth/mutations/logout"
 import { useCurrentUser } from "app/hooks/useCurrentUser"
-import { Suspense, useState } from "react"
-import ReactMapGL from "react-map-gl"
+import { Suspense, PureComponent } from "react"
+import ReactMapGL, { Marker } from "react-map-gl"
 
+import skiAreas from "resorts.json"
 /*
  * This file is just for a pleasant getting started page for your new app.
  * You can delete everything in here and start from scratch if you like.
  */
-const MapboxMap = () => {
-  const [viewport, setViewport] = useState({
-    latitude: 49.3448841,
-    longitude: -119.5802691,
-    width: 50 + "vw",
-    height: 50 + "vh",
-    zoom: 13,
-  })
 
-  return (
-    <div className="bg-black  object-center">
-      <ReactMapGL
-        {...viewport}
-        mapboxApiAccessToken={
-          "pk.eyJ1Ijoib2xpdmllcm10bCIsImEiOiJja2c2a3NlcjYxNWE5MnFvNXd3YWExaG13In0.n55Tr-IjbzoUZn0eNIk1iw"
-        }
-        onViewportChange={(viewport) => {
-          setViewport(viewport)
-        }}
-      >
-        <div className="box-border h-20 w-64 p-4 border-4 border-gray-400 bg-gray-200 ">
-          <div className="h-full w-full bg-gray-400">
-            {" "}
-            <h1 className="text-purple-500">Hello</h1>
-          </div>
-        </div>
-      </ReactMapGL>
-    </div>
-  )
+let resortsList: Array<any> = []
+skiAreas.skiAreas.skiArea.map((resort: { georeferencing: any }, index) => {
+  if (
+    resort.hasOwnProperty("georeferencing") &&
+    resort.georeferencing.hasOwnProperty("_lat") &&
+    index < 1000
+  ) {
+    resortsList.push(resort)
+  }
+})
+
+const points = resortsList.map((resort: { georeferencing: any; _id: any; name: any }) => ({
+  type: "Feature",
+  name: resort.name,
+  properties: { cluster: false, resortId: resort._id },
+  geometry: {
+    type: "Point",
+    coordinates: [parseFloat(resort.georeferencing._lng), parseFloat(resort.georeferencing._lat)],
+  },
+}))
+
+class Markers extends PureComponent<{ data: Array<any> }> {
+  render() {
+    const { data } = this.props
+    console.log(data)
+    return data.map((resort: { properties: any; geometry: any }) => {
+      return (
+        <Marker
+          key={`  resort-${resort.properties.resortId}`}
+          latitude={resort.geometry.coordinates[1]}
+          longitude={resort.geometry.coordinates[0]}
+        >
+          <img src="location-pin.png" width="16" height="16" alt="crime doesn't pay" />
+        </Marker>
+      )
+    })
+  }
 }
+
+class MapboxMap extends PureComponent {
+  state = {
+    viewport: {
+      latitude: 37.78,
+      longitude: -122.41,
+      zoom: 8,
+      width: "70vw",
+      height: "50vw",
+    },
+  }
+
+  render() {
+    return (
+      <div className="bg-black  object-center">
+        <ReactMapGL
+          {...this.state.viewport}
+          onViewportChange={(viewport) => this.setState({ viewport })}
+          mapboxApiAccessToken={
+            "pk.eyJ1Ijoib2xpdmllcm10bCIsImEiOiJja2c2a3NlcjYxNWE5MnFvNXd3YWExaG13In0.n55Tr-IjbzoUZn0eNIk1iw"
+          }
+          mapStyle="mapbox://styles/mapbox/streets-v11"
+        >
+          <div className="box-border h-20 w-64 p-4 border-4 border-gray-400 bg-gray-200 ">
+            <div className="h-full w-full bg-gray-400">
+              {" "}
+              <h1 className="text-purple-500">Hello</h1>
+            </div>
+          </div>
+          <Markers data={points} />
+        </ReactMapGL>
+      </div>
+    )
+  }
+}
+
 const UserInfo = () => {
   const currentUser = useCurrentUser()
   const [logoutMutation] = useMutation(logout)
