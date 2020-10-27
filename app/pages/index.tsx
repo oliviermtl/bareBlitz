@@ -2,9 +2,9 @@ import { Link, BlitzPage, useMutation } from "blitz"
 import Layout from "app/layouts/Layout"
 import logout from "app/auth/mutations/logout"
 import { useCurrentUser } from "app/hooks/useCurrentUser"
-import { Suspense, PureComponent } from "react"
+import { Suspense, PureComponent, useState, useRef } from "react"
 import ReactMapGL, { Marker } from "react-map-gl"
-// import Pins from '../components/pins';
+
 
 import skiAreas from "resorts.json"
 /*
@@ -156,6 +156,7 @@ const UserInfo = () => {
     )
   }
 }
+
 
 const Home: BlitzPage = () => {
   return (
@@ -377,6 +378,7 @@ const Home: BlitzPage = () => {
     </div>
   )
 }
+
 
 Home.getLayout = (page) => <Layout title="Home">{page}</Layout>
 
