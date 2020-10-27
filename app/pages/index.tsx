@@ -4,6 +4,7 @@ import logout from "app/auth/mutations/logout"
 import { useCurrentUser } from "app/hooks/useCurrentUser"
 import { Suspense, PureComponent } from "react"
 import ReactMapGL, { Marker } from "react-map-gl"
+// import Pins from '../components/pins';
 
 import skiAreas from "resorts.json"
 /*
@@ -12,7 +13,7 @@ import skiAreas from "resorts.json"
  */
 
 let resortsList: Array<any> = []
-skiAreas.skiAreas.skiArea.map((resort: { georeferencing: any }, index) => {
+skiAreas.map((resort: { georeferencing: any }, index) => {
   if (
     resort.hasOwnProperty("georeferencing") &&
     resort.georeferencing.hasOwnProperty("_lat") &&
@@ -49,6 +50,36 @@ class Markers extends PureComponent<{ data: Array<any> }> {
     })
   }
 }
+class Pins extends PureComponent<{ data: Array<any> }> {
+  render() {
+    const { data } = this.props
+
+    return data.map((city: { properties: any; geometry: any; georeferencing: any }, index) => {
+      return (
+        <Marker
+          key={`marker-${index}`}
+          longitude={parseFloat(city.georeferencing._lng)}
+          latitude={parseFloat(city.georeferencing._lat)}
+        >
+          {/* <svg
+          height={SIZE}
+          viewBox="0 0 24 24"
+          style={{
+            cursor: 'pointer',
+            fill: '#d00',
+            stroke: 'none',
+            transform: `translate(${-SIZE / 2}px,${-SIZE}px)`
+          }}
+          onClick={() => onClick(city)}
+        >
+          <path d={ICON} />
+        </svg> */}
+          <img src="location-pin.png" width="16" height="16" alt="crime doesn't pay" />
+        </Marker>
+      )
+    })
+  }
+}
 
 class MapboxMap extends PureComponent {
   state = {
@@ -78,7 +109,8 @@ class MapboxMap extends PureComponent {
               <h1 className="text-purple-500">Hello</h1>
             </div>
           </div>
-          <Markers data={points} />
+          {/* <Markers data={points} /> */}
+          <Pins data={resortsList} />
         </ReactMapGL>
       </div>
     )
