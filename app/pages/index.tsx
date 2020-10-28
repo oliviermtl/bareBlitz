@@ -71,9 +71,7 @@ class MapboxMap extends PureComponent {
         <ReactMapGL
           {...this.state.viewport}
           onViewportChange={(viewport) => this.setState({ viewport })}
-          mapboxApiAccessToken={
-            "pk.eyJ1Ijoib2xpdmllcm10bCIsImEiOiJja2c2a3NlcjYxNWE5MnFvNXd3YWExaG13In0.n55Tr-IjbzoUZn0eNIk1iw"
-          }
+          mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
           mapStyle="mapbox://styles/mapbox/streets-v11"
         >
           <div className="box-border h-20 w-64 p-4 border-4 border-gray-400 bg-gray-200 ">
