@@ -2,9 +2,8 @@ import { Link, BlitzPage, useMutation } from "blitz"
 import Layout from "app/layouts/Layout"
 import logout from "app/auth/mutations/logout"
 import { useCurrentUser } from "app/hooks/useCurrentUser"
-import { Suspense, PureComponent, useState, useRef } from "react"
+import { Suspense, PureComponent } from "react"
 import ReactMapGL, { Marker } from "react-map-gl"
-
 
 import skiAreas from "resorts.json"
 /*
@@ -21,35 +20,9 @@ skiAreas.map((resort: { georeferencing: any }, index) => {
   ) {
     resortsList.push(resort)
   }
+  return null
 })
 
-const points = resortsList.map((resort: { georeferencing: any; _id: any; name: any }) => ({
-  type: "Feature",
-  name: resort.name,
-  properties: { cluster: false, resortId: resort._id },
-  geometry: {
-    type: "Point",
-    coordinates: [parseFloat(resort.georeferencing._lng), parseFloat(resort.georeferencing._lat)],
-  },
-}))
-
-class Markers extends PureComponent<{ data: Array<any> }> {
-  render() {
-    const { data } = this.props
-    console.log(data)
-    return data.map((resort: { properties: any; geometry: any }) => {
-      return (
-        <Marker
-          key={`  resort-${resort.properties.resortId}`}
-          latitude={resort.geometry.coordinates[1]}
-          longitude={resort.geometry.coordinates[0]}
-        >
-          <img src="location-pin.png" width="16" height="16" alt="crime doesn't pay" />
-        </Marker>
-      )
-    })
-  }
-}
 class Pins extends PureComponent<{ data: Array<any> }> {
   render() {
     const { data } = this.props
@@ -156,7 +129,6 @@ const UserInfo = () => {
     )
   }
 }
-
 
 const Home: BlitzPage = () => {
   return (
@@ -378,7 +350,6 @@ const Home: BlitzPage = () => {
     </div>
   )
 }
-
 
 Home.getLayout = (page) => <Layout title="Home">{page}</Layout>
 

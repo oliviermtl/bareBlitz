@@ -39,6 +39,7 @@
     "blitz": "0.24.3",
     "final-form": "4.20.1",
     "google-map-react": "2.1.8",
+    "google-maps-react": "2.0.6",
     "passport-google-oauth": "2.0.0",
     "react": "0.0.0-experimental-7f28234f8",
     "react-dom": "0.0.0-experimental-7f28234f8",
